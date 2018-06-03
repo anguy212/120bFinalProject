@@ -142,7 +142,7 @@ int main()
 		//LCD_WriteData(9*pow(10, 1) + 7);
         // Scheduler code
        key = GetKeypadKey();
-		if(key !=  '\0' && key != '#')
+        if(key !=  '\0' && key != '#')
 		{
 			LCD_WriteData(key);
 			if (key == '*')
