@@ -86,6 +86,26 @@ char changetoChar(unsigned char num)
 
 	}
 }
+unsigned char findHowManyB4Dec(unsigned char num)
+{
+	if(num >= 100)
+	{
+		return 3;
+	}
+	else if(num >= 10)
+	{
+		return 2;
+	}
+	else if(num >= 1)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+	
+}
 
 
 //--------Task scheduler data structure---------------------------------------
@@ -156,16 +176,22 @@ int main()
 				holder2--;
 			}
 		
-		float n1 = (float) num1;
-		float n2 = (float) num2;
-		float dec = n1 + (n2/100);		
+		double n1 = (double) num1;
+		double n2 = (double) num2;
+		double dec = n1 + (n2/100);		
 		//dec = dec + 1.12;
-		float decpart = (dec - (int)dec) * 100;
+		double decpart = (dec - (int)dec) * 100;
 		int decVal = (int)decpart;
 		int intVal = (int)dec;
 		
 		num1 = (unsigned char)intVal;
 		num2 = (unsigned char)decVal;
+				
+		if(num1 >= 99)
+		{
+			num1++;
+		}		
+		place = findHowManyB4Dec(num1);
 		
 		holder2 = place - 1;
 		
