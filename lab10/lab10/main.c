@@ -472,6 +472,9 @@ int trans(int state)
 		case options:
 		{
 			LCD_DisplayString(1, "A       B           ");
+			
+			holderMoney = eeprom_read_float((float *)1);
+
 			intval = (int)holderMoney;
 			holderMoney = (holderMoney - (int)holderMoney) * 100;
 			decval = (int)holderMoney;
@@ -548,7 +551,6 @@ int trans(int state)
 				LCD_WriteData(changetoChar(holder3));
 				holder2--;
 			}
-			state = pricePick;
 			break;
 		}
 		case options1:
@@ -701,7 +703,7 @@ int setting(int state)
 			if (key == 'A')
 			{
 				state = codeSet;
-				LCD_DisplayString(1, "enter old code:  ");
+				LCD_DisplayString(1, "enter new code:  ");
 			}
 			else if(key == 'B')
 			{
@@ -920,7 +922,7 @@ int setting(int state)
 			//write to corresponding eeprom price
 			holder2 = place - 1;
 			holder = 0;
-			LCD_DisplayString(1, "change:          ");
+			//LCD_DisplayString(1, "change:          ");
 			for(int i = 0; i < place; i++)
 			{
 				//LCD_WriteData(number[i]);
