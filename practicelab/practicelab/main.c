@@ -142,7 +142,7 @@ int main()
 		//LCD_WriteData(9*pow(10, 1) + 7);
         // Scheduler code
        key = GetKeypadKey();
-        if(key !=  '\0' && key != '#')
+		if(key !=  '\0' && key != '#')
 		{
 			LCD_WriteData(key);
 			if (key == '*')
@@ -176,7 +176,7 @@ int main()
 				holder2--;
 			}
 		
-		double n1 = (double) num1;
+		/*double n1 = (double) num1;
 		double n2 = (double) num2;
 		double dec = n1 + (n2/100);		
 		//dec = dec + 1.12;
@@ -185,7 +185,7 @@ int main()
 		int intVal = (int)dec;
 		
 		num1 = (unsigned char)intVal;
-		num2 = (unsigned char)decVal;
+		num2 = (unsigned char)decVal;*/
 				
 		if(num1 >= 99)
 		{

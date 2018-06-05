@@ -19,6 +19,13 @@ unsigned long int findGCD(unsigned long int a, unsigned long int b)
     }
     return 0;
 }
+void clearArray(unsigned char *a, unsigned char size)
+{
+	for(int i = 0; i < size; i++)
+	{
+		a[i] = 0;
+	}
+}
 //--------End find GCD function ----------------------------------------------
 
 // Keypad input function
@@ -162,7 +169,9 @@ void ReadOrDisplay()
 			decpart = 0;
 			dec = 0;
 			decVal = 0;
+			clearArray(number, 7);
 			intVal = 0;
+			
 			break;
 		}
 		case options:
@@ -262,12 +271,12 @@ void ReadOrDisplay()
 			float n1 = (float) num1;
 			float n2 = (float) num2;
 			float dec = n1 + (n2/100);
-			eeprom_write_float(1, dec);
+			eeprom_write_float(3, dec);
 			break;
 		}
 		case display:
 		{
-			dec = eeprom_read_float(1);
+			dec = eeprom_read_float(3);
 			decpart = (dec - (int)dec) * 100;
 			int decVal = (int)decpart;
 			int intVal = (int)dec;

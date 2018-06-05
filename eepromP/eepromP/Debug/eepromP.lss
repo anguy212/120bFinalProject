@@ -1138,7 +1138,7 @@ void ReadOrDisplay()
 			float n1 = (float) num1;
 			float n2 = (float) num2;
 			float dec = n1 + (n2/100);
-			eeprom_write_float(1, dec);
+			eeprom_write_float(3, dec);
      6b4:	0c f4       	brge	.+2      	; 0x6b8 <ReadOrDisplay+0x288>
      6b6:	c3 cf       	rjmp	.-122    	; 0x63e <ReadOrDisplay+0x20e>
      6b8:	60 91 66 01 	lds	r22, 0x0166	; 0x800166 <num2>
@@ -1165,16 +1165,16 @@ void ReadOrDisplay()
      6e6:	17 d1       	rcall	.+558    	; 0x916 <__addsf3>
      6e8:	ab 01       	movw	r20, r22
      6ea:	bc 01       	movw	r22, r24
-     6ec:	81 e0       	ldi	r24, 0x01	; 1
+     6ec:	83 e0       	ldi	r24, 0x03	; 3
      6ee:	90 e0       	ldi	r25, 0x00	; 0
 			break;
      6f0:	73 d4       	rcall	.+2278   	; 0xfd8 <eeprom_write_dword>
 		}
 		case display:
 		{
-			dec = eeprom_read_float(1);
+			dec = eeprom_read_float(3);
      6f2:	e8 c0       	rjmp	.+464    	; 0x8c4 <ReadOrDisplay+0x494>
-     6f4:	81 e0       	ldi	r24, 0x01	; 1
+     6f4:	83 e0       	ldi	r24, 0x03	; 3
      6f6:	90 e0       	ldi	r25, 0x00	; 0
      6f8:	6a d4       	rcall	.+2260   	; 0xfce <eeprom_read_dword>
      6fa:	4b 01       	movw	r8, r22
