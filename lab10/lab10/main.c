@@ -247,6 +247,11 @@ int Lock(int state)
 				pos = 1;
 			}
 			
+			if(count == 1)
+			{
+				pos = 3;
+			}
+			
 			break;
 		}
 		default:
@@ -591,18 +596,21 @@ int trans(int state)
 		case change:
 		{
 			LCD_DisplayString(1, "change:          ");
+			
+			LCD_WriteData(0x01);
+
 			for(int i = 0; i < place; i++)
 			{
-				LCD_WriteData(number[i]);
+				//LCD_WriteData(number[i]);
 				holder = changetoInteger(number[i]);
 				num1 = holder*pow(10, holder2) + num1;
 				holder2--;
 			}
-			LCD_WriteData('.');
+			//LCD_WriteData('.');
 			holder2 = 1;
 			for(int j = place+1; j < count-1; j++)
 			{	
-				LCD_WriteData(number[j]);
+				//LCD_WriteData(number[j]);
 				holder = changetoInteger(number[j]);
 				num2 = holder*pow(10, holder2) + num2;
 				holder2--;
@@ -1050,6 +1058,7 @@ int main()
 	// Buttons PORTA[0-7], set AVR PORTA to pull down logic
 	DDRA = 0xFF; PORTA = 0x00;
 	DDRD = 0xFF; PORTD = 0x00;
+	DDRB = 0xFF; PORTB = 0x00;
 	DDRC = 0xF0; PORTC = 0x0F;
 	
 	// . . . etc
@@ -1106,6 +1115,12 @@ int main()
 	e.elapsedTime = SMTick5_period;//Task current elapsed time.
 	e.TickFct = &keypad;//Function pointer for the tick.
 	
+	unsigned char eruo[] = {0x00,0x0E,0x09,0x1E,0x1E,0x09,0x0E,0x00};
+	
+	LCDcustomChar(1, eruo);
+
+
+	
 	// Set the timer and turn it on
 	TimerSet(100);
 	TimerOn();
@@ -1115,7 +1130,8 @@ int main()
 	
 	unsigned short i; // Scheduler for-loop iterator
 	while(1) {
-		// Scheduler code
+		
+				// Scheduler code
 		for ( i = 0; i < numTasks; i++ ) {
 			// Task is ready to tick
 			if ( tasks[i]->elapsedTime == tasks[i]->period ) {
