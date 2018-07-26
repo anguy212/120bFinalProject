@@ -9,6 +9,7 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 #include <avr/eeprom.h>
+#include <avr/delay.h>
 #include "bit.h"
 #include "timer.h"
 #include "io.c"
@@ -134,7 +135,7 @@ typedef struct _task {
 //--------End Task scheduler data structure-----------------------------------
 
 //--------Shared Variables----------------------------------------------------
-unsigned char pos, key, key2;
+unsigned char pos, key, key2, joy;
 	
 //--------End Shared Variables------------------------------------------------
 
@@ -145,6 +146,7 @@ enum TransStates{startT, pauseT, options, options1, picked, picked1, payment, pa
 enum SettingStates{startS, pauseS, opt, codeSet, codeWrite, pricePick, priceSet, priceWrite, done};
 enum Keypad500states{startK, wait, press, unpress};
 enum LockStates{startL, pauseL, enterPin, checkPin};
+enum JoyStates{sample};
 
 int Lock(int state)
 {
@@ -395,88 +397,7 @@ int trans(int state)
 		}
 		case options:
 		{
-			state = options1;
-			break;
-		}
-		case options1:
-		{
-			key = GetKeypadKey();
-			if(key == 'A')
-			{
-				state = picked;
-				totalMoney += eeprom_read_float((float *)1);
-			}
-			else if(key == 'B')
-			{
-				state = picked;
-				totalMoney += eeprom_read_float((float *)10);
-			}
-			break;
-		}
-		case picked:
-		{
-			state = picked1;
-			break;
-		}
-		case picked1:
-		{
-			key = GetKeypadKey();
-			if(key == 'A')
-			{
-				state = payment;
-			}
-			else if(key == 'B')
-			{
-				state = options;
-			}
-			break;
-		}
-		case payment:
-		{
-			state = payment1;
-			break;
-		}
-		case payment1:
-		{
-			if(key == '#')
-			{
-				state = change;
-			}
-			break;
-		}
-		case change:
-		{
-			state = change1;
-		}
-		case change1:
-		{
-			key = GetKeypadKey();
-			if(key == '#')
-			{
-				pos = 3;
-				state = pauseT;
-			}
-			break;
-		}
-		default:
-		{
-			state = startT;
-			break;
-		}
-	}
-	switch (state)
-	{
-		case startT:
-		{
-			break;
-		}
-		case pauseT:
-		{
-			break;
-		}
-		case options:
-		{
-			LCD_DisplayString(1, "A       B           ");
+			LCD_DisplayString(1, "A     B            ");
 			
 			holderMoney = eeprom_read_float((float *)1);
 
@@ -556,6 +477,89 @@ int trans(int state)
 				LCD_WriteData(changetoChar(holder3));
 				holder2--;
 			}
+			state = options1;
+			break;
+		}
+		case options1:
+		{
+			key = GetKeypadKey();
+			if(key == 'A')
+			{
+				state = picked;
+				totalMoney += eeprom_read_float((float *)1);
+			}
+			else if(key == 'B')
+			{
+				state = picked;
+				totalMoney += eeprom_read_float((float *)10);
+			}
+			break;
+		}
+		case picked:
+		{
+			state = picked1;
+			break;
+		}
+		case picked1:
+		{
+			key = GetKeypadKey();
+			if(key == 'A')
+			{
+				state = payment;
+			}
+			else if(key == 'B')
+			{
+				state = options;
+			}
+			break;
+		}
+		case payment:
+		{
+			state = payment1;
+			break;
+		}
+		case payment1:
+		{
+			if(key == '#')
+			{
+				state = change;
+				OCR1A = 65;
+			}
+			break;
+		}
+		case change:
+		{
+			state = change1;
+		}
+		case change1:
+		{
+			key = GetKeypadKey();
+			if(key == '#')
+			{
+				pos = 3;
+				state = pauseT;
+				OCR1A = 175;
+			}
+			break;
+		}
+		default:
+		{
+			state = startT;
+			break;
+		}
+	}
+	switch (state)
+	{
+		case startT:
+		{
+			break;
+		}
+		case pauseT:
+		{
+			break;
+		}
+		case options:
+		{
 			break;
 		}
 		case options1:
@@ -769,6 +773,7 @@ int setting(int state)
 				LCD_WriteData(' ');
 				LCD_WriteData(' ');
 				LCD_WriteData(' ');
+				LCD_WriteData(' ');
 				
 				
 				if(num1 >= 99)
@@ -811,8 +816,13 @@ int setting(int state)
 		}
 		case codeWrite:
 		{
+			LCD_DisplayString(1, " settings | menu     ");
+			LCD_WriteData(2);
+			LCD_Cursor(33);
 			state = done;
-			LCD_DisplayString(1, "A        |   #  settings | menu");
+			//change to custom char;
+			holder2 = 1;
+			
 			break;
 		}
 		case pricePick:
@@ -844,21 +854,44 @@ int setting(int state)
 		}
 		case priceWrite:
 		{
-			LCD_DisplayString(1, "A        |   #  settings | menu");	
+			LCD_DisplayString(1, " settings | menu     ");
+			LCD_WriteData(2);
+			LCD_Cursor(33);
 			state = done;
+			//change to custom char;
+			holder2 = 1;
+			
 			break;
 		}
 		case done:
 		{
 			key = GetKeypadKey();
-			if(key == 'A')
+			if(joy == 1)
 			{
-				state = opt;
+				LCD_DisplayString(1, " settings | menu     ");
+				LCD_WriteData(2);
+				LCD_Cursor(33);
+				holder2 = 1;
 			}
-			else if(key == '#')
+			else if(joy == 2)
 			{
-				pos = 3;
-				state = pauseS;
+				LCD_DisplayString(1, " settings | menu            ");
+				LCD_WriteData(2);
+				LCD_Cursor(33);
+				holder2 = 2;
+			}
+		
+			if(key == '#')
+			{
+				if(holder2 == 1)
+				{
+					state = pauseS;
+				}
+				else
+				{
+					state = pauseS;
+					pos = 3;
+				}
 			}
 			break;
 		}
@@ -1051,12 +1084,56 @@ int keypad(int state)
 	}
 	return state;
 }
+
+int JoyTick(int state)
+{
+	ADMUX = 1;
+	static unsigned short stickInput;
+	stickInput = ADC;
+	
+	//DELAY?
+	_delay_ms(20);	
+
+	if(stickInput > 0 && stickInput < 100 && ADMUX == 1){ 
+				
+		joy = 1; //left
+
+	}
+	else if(stickInput > 900 && ADMUX == 1){ 
+				
+		joy = 2; //right
+
+	}
+	else
+	{
+		joy = 0; //no movement; 
+	}
+	return state;
+}
+
+void ADC_init() {
+	ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADATE);
+	// ADSCRA: ADC status and control register A
+	// ADEN: Writing '1' to ADEN enables ADC
+	// ADSC: Analog-digital start conversion: ADEN must be enabled first or at the same time
+	//		 Writing '1' to this starts conversion, hardware sets back to '0'
+	// ADATE:AD Auto-Trigger enable. ADC will start conversion automatically on a positive edge of trigger signal
+}
+
+void ServoPWMinit()
+{
+	DDRD |= 0xFF;								/* Make OC1A pin as output */
+	TCNT1 = 0;										/* Set timer1 count zero */
+	ICR1 = 2499;									/* Set TOP count for timer1 in ICR1 register */
+	TCCR1A = (1<<WGM11)|(1<<COM1A1);				/* Set Fast PWM, TOP in ICR1, Clear OC1A on compare match, clk/64 */
+	TCCR1B = (1<<WGM12)|(1<<WGM13)|(1<<CS10)|(1<<CS11);
+}
 	
 int main()
 {
 	// Set Data Direction Registers
 	// Buttons PORTA[0-7], set AVR PORTA to pull down logic
-	DDRA = 0xFF; PORTA = 0x00;
+	DDRA = 0xFC; PORTA = 0x02;
 	DDRD = 0xFF; PORTD = 0x00;
 	DDRB = 0xFF; PORTB = 0x00;
 	DDRC = 0xF0; PORTC = 0x0F;
@@ -1069,6 +1146,7 @@ int main()
 	unsigned long int transperiod = 200;
 	unsigned long int settingperiod = 200;
 	unsigned long int keypadperiod = 100;
+	unsigned long int joystickPeriod = 100;
 
 	
 	//Calculating GCD
@@ -1081,11 +1159,13 @@ int main()
 	unsigned long int SMTick2_period = transperiod/100;
 	unsigned long int SMTick3_period = settingperiod/100;
 	unsigned long int SMTick5_period = keypadperiod/100;
+	unsigned long int SMTick6_period = joystickPeriod/100;
+
 
 	
 	//Declare an array of tasks
-	static task j,a,b,c,e;
-	task *tasks[] = {&j, &a, &b, &c, &e};
+	static task j,a,b,c,e,f;
+	task *tasks[] = {&j, &a, &b, &c, &e, &f};
 	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 	
 	// Task 1
@@ -1115,11 +1195,22 @@ int main()
 	e.elapsedTime = SMTick5_period;//Task current elapsed time.
 	e.TickFct = &keypad;//Function pointer for the tick.
 	
-	unsigned char eruo[] = {0x00,0x0E,0x09,0x1E,0x1E,0x09,0x0E,0x00};
+	f.state = sample;//Task initial state.
+	f.period = SMTick6_period;//Task Period.
+	f.elapsedTime = SMTick6_period;//Task current elapsed time.
+	f.TickFct = &JoyTick;//Function pointer for the tick.
 	
+	unsigned char eruo[] = {0x00,0x0E,0x09,0x1E,0x1E,0x09,0x0E,0x00};
+	unsigned char arrow[] = {0x00, 0x04, 0x0E, 0x1F, 0x04, 0x04, 0x04, 0x00};
+ 	
 	LCDcustomChar(1, eruo);
+	LCDcustomChar(2, arrow);
 
-
+	
+	ADC_init();
+	ServoPWMinit();
+	OCR1A = 175;
+	_delay_ms(50);
 	
 	// Set the timer and turn it on
 	TimerSet(100);

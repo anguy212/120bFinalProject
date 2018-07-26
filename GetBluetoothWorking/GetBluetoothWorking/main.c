@@ -161,12 +161,24 @@ int main()
 	
 	LCD_init();
 	LCD_ClearScreen();
+	unsigned char NameOfDevice[16] = {};
 	
 	while(1) {
 
+		USART_Send('A');
+		USART_Send('T');
+		USART_Send('+');
+		USART_Send('N');
+		USART_Send('A');
+		USART_Send('M');
+		USART_Send('E');
+		USART_Send('?');
 		
-		//while(!TimerFlag);
-		//TimerFlag = 0;
+		for(int i = 0; i < 16; i++)
+		{
+			NameOfDevice[i] = USART_Receive();
+			LCD_WriteData(NameOfDevice[i]);
+		}
 	}
 	
 	// Error: Program should not exit!

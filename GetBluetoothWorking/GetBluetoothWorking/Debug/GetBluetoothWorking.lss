@@ -3,31 +3,31 @@ GetBluetoothWorking.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000004  00800100  00000204  00000298  2**0
+  0 .data         00000004  00800100  00000234  000002c8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000204  00000000  00000000  00000094  2**1
+  1 .text         00000234  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000005  00800104  00800104  0000029c  2**0
+  2 .bss          00000005  00800104  00800104  000002cc  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  0000029c  2**0
+  3 .comment      00000030  00000000  00000000  000002cc  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002cc  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002fc  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000d0  00000000  00000000  0000030c  2**0
+  5 .debug_aranges 00000100  00000000  00000000  0000033c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000e43  00000000  00000000  000003dc  2**0
+  6 .debug_info   00000f6e  00000000  00000000  0000043c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000938  00000000  00000000  0000121f  2**0
+  7 .debug_abbrev 0000097a  00000000  00000000  000013aa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000007d9  00000000  00000000  00001b57  2**0
+  8 .debug_line   000008cf  00000000  00000000  00001d24  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000001cc  00000000  00000000  00002330  2**2
+  9 .debug_frame  00000240  00000000  00000000  000025f4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000576  00000000  00000000  000024fc  2**0
+ 10 .debug_str    000005eb  00000000  00000000  00002834  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000767  00000000  00000000  00002a72  2**0
+ 11 .debug_loc    00000879  00000000  00000000  00002e1f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000c0  00000000  00000000  000031d9  2**0
+ 12 .debug_ranges 000000f0  00000000  00000000  00003698  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -116,7 +116,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e4 e0       	ldi	r30, 0x04	; 4
+  9e:	e4 e3       	ldi	r30, 0x34	; 52
   a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -140,8 +140,8 @@ Disassembly of section .text:
   bc:	a9 30       	cpi	r26, 0x09	; 9
   be:	b2 07       	cpc	r27, r18
   c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
-  c2:	7f d0       	rcall	.+254    	; 0x1c2 <main>
-  c4:	9d c0       	rjmp	.+314    	; 0x200 <_exit>
+  c2:	93 d0       	rcall	.+294    	; 0x1ea <main>
+  c4:	b5 c0       	rjmp	.+362    	; 0x230 <_exit>
 
 000000c6 <__bad_interrupt>:
   c6:	9c cf       	rjmp	.-200    	; 0x0 <__vectors>
@@ -220,7 +220,7 @@ Disassembly of section .text:
 
 00000166 <LCD_WriteCommand>:
  166:	10 98       	cbi	0x02, 0	; 2
- 168:	8b b9       	out	0x0b, r24	; 11
+ 168:	85 b9       	out	0x05, r24	; 5
  16a:	11 9a       	sbi	0x02, 1	; 2
  16c:	00 00       	nop
  16e:	11 98       	cbi	0x02, 1	; 2
@@ -251,103 +251,127 @@ Disassembly of section .text:
  198:	d3 cf       	rjmp	.-90     	; 0x140 <delay_ms>
  19a:	08 95       	ret
 
-0000019c <USART_Init>:
-void USART_Init( unsigned int ubrr)
-{
-	/*Set baud rate */
-	UBRR0H = (unsigned char)(ubrr>>8);
- 19c:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7e00c5>
-	UBRR0L = (unsigned char)ubrr;
- 1a0:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7e00c4>
-	//Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
- 1a4:	88 e1       	ldi	r24, 0x18	; 24
- 1a6:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7e00c1>
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
- 1aa:	8e e0       	ldi	r24, 0x0E	; 14
- 1ac:	80 93 c2 00 	sts	0x00C2, r24	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7e00c2>
- 1b0:	08 95       	ret
+0000019c <LCD_WriteData>:
+ 19c:	10 9a       	sbi	0x02, 0	; 2
+ 19e:	85 b9       	out	0x05, r24	; 5
+ 1a0:	11 9a       	sbi	0x02, 1	; 2
+ 1a2:	00 00       	nop
+ 1a4:	11 98       	cbi	0x02, 1	; 2
+ 1a6:	81 e0       	ldi	r24, 0x01	; 1
+ 1a8:	90 e0       	ldi	r25, 0x00	; 0
+ 1aa:	ca cf       	rjmp	.-108    	; 0x140 <delay_ms>
+ 1ac:	08 95       	ret
 
-000001b2 <USART_Transmit>:
-}
+000001ae <initUSART>:
+ 1ae:	e1 ec       	ldi	r30, 0xC1	; 193
+ 1b0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b2:	80 81       	ld	r24, Z
+ 1b4:	88 61       	ori	r24, 0x18	; 24
+ 1b6:	80 83       	st	Z, r24
+ 1b8:	8e e0       	ldi	r24, 0x0E	; 14
+ 1ba:	80 93 c2 00 	sts	0x00C2, r24	; 0x8000c2 <__TEXT_REGION_LENGTH__+0x7e00c2>
+ 1be:	83 e3       	ldi	r24, 0x33	; 51
+ 1c0:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__TEXT_REGION_LENGTH__+0x7e00c4>
+ 1c4:	10 92 c5 00 	sts	0x00C5, r1	; 0x8000c5 <__TEXT_REGION_LENGTH__+0x7e00c5>
+ 1c8:	08 95       	ret
 
- void USART_Transmit( unsigned char data )
- {
-	 /* Wait for empty transmit buffer */
-	 while ( !( UCSR0A & (1 << UDRE0)) );
- 1b2:	e0 ec       	ldi	r30, 0xC0	; 192
- 1b4:	f0 e0       	ldi	r31, 0x00	; 0
- 1b6:	90 81       	ld	r25, Z
- 1b8:	95 ff       	sbrs	r25, 5
- 1ba:	fd cf       	rjmp	.-6      	; 0x1b6 <USART_Transmit+0x4>
-	 /* Put data into buffer, sends the data */
-	 UDR0 = data;
- 1bc:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
- 1c0:	08 95       	ret
+000001ca <USART_Send>:
+ 1ca:	e0 ec       	ldi	r30, 0xC0	; 192
+ 1cc:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ce:	90 81       	ld	r25, Z
+ 1d0:	95 ff       	sbrs	r25, 5
+ 1d2:	fd cf       	rjmp	.-6      	; 0x1ce <USART_Send+0x4>
+ 1d4:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 1d8:	08 95       	ret
 
-000001c2 <main>:
+000001da <USART_Receive>:
+ 1da:	e0 ec       	ldi	r30, 0xC0	; 192
+ 1dc:	f0 e0       	ldi	r31, 0x00	; 0
+ 1de:	80 81       	ld	r24, Z
+ 1e0:	88 23       	and	r24, r24
+ 1e2:	ec f7       	brge	.-6      	; 0x1de <USART_Receive+0x4>
+ 1e4:	80 91 c6 00 	lds	r24, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7e00c6>
+ 1e8:	08 95       	ret
+
+000001ea <main>:
 //Enumeration of states
 int main()
 {
 	// Set Data Direction Registers
 	// Buttons PORTA[0-7], set AVR PORTA to pull down logic
 	DDRA = 0xFF; PORTA = 0x00;
- 1c2:	8f ef       	ldi	r24, 0xFF	; 255
- 1c4:	81 b9       	out	0x01, r24	; 1
- 1c6:	12 b8       	out	0x02, r1	; 2
+ 1ea:	8f ef       	ldi	r24, 0xFF	; 255
+ 1ec:	81 b9       	out	0x01, r24	; 1
+ 1ee:	12 b8       	out	0x02, r1	; 2
 	DDRD = 0xFF; PORTD = 0x00;
- 1c8:	8a b9       	out	0x0a, r24	; 10
- 1ca:	1b b8       	out	0x0b, r1	; 11
+ 1f0:	8a b9       	out	0x0a, r24	; 10
+ 1f2:	1b b8       	out	0x0b, r1	; 11
 	DDRC = 0xF0; PORTC = 0x0F;
- 1cc:	80 ef       	ldi	r24, 0xF0	; 240
- 1ce:	87 b9       	out	0x07, r24	; 7
- 1d0:	8f e0       	ldi	r24, 0x0F	; 15
- 1d2:	88 b9       	out	0x08, r24	; 8
+ 1f4:	80 ef       	ldi	r24, 0xF0	; 240
+ 1f6:	87 b9       	out	0x07, r24	; 7
+ 1f8:	8f e0       	ldi	r24, 0x0F	; 15
+ 1fa:	88 b9       	out	0x08, r24	; 8
 	
 	// Set the timer and turn it on
 	//TimerSet(200);
 	//TimerOn();
 	
+	initUSART();
+ 1fc:	d8 df       	rcall	.-80     	; 0x1ae <initUSART>
+	
 	LCD_init();
- 1d4:	d4 df       	rcall	.-88     	; 0x17e <LCD_init>
+ 1fe:	bf df       	rcall	.-130    	; 0x17e <LCD_init>
 	LCD_ClearScreen();
- 1d6:	d0 df       	rcall	.-96     	; 0x178 <LCD_ClearScreen>
- 1d8:	87 e6       	ldi	r24, 0x67	; 103
-	USART_Init(MYUBRR);
- 1da:	90 e0       	ldi	r25, 0x00	; 0
- 1dc:	df df       	rcall	.-66     	; 0x19c <USART_Init>
+ 200:	bb df       	rcall	.-138    	; 0x178 <LCD_ClearScreen>
+	unsigned char NameOfDevice[16] = {};
 	
 	while(1) {
+
+		USART_Send('A');
+ 202:	81 e4       	ldi	r24, 0x41	; 65
+ 204:	e2 df       	rcall	.-60     	; 0x1ca <USART_Send>
+		USART_Send('T');
+ 206:	84 e5       	ldi	r24, 0x54	; 84
+ 208:	e0 df       	rcall	.-64     	; 0x1ca <USART_Send>
+		USART_Send('+');
+ 20a:	8b e2       	ldi	r24, 0x2B	; 43
+ 20c:	de df       	rcall	.-68     	; 0x1ca <USART_Send>
+		USART_Send('N');
+ 20e:	8e e4       	ldi	r24, 0x4E	; 78
+ 210:	dc df       	rcall	.-72     	; 0x1ca <USART_Send>
+		USART_Send('A');
+ 212:	81 e4       	ldi	r24, 0x41	; 65
+ 214:	da df       	rcall	.-76     	; 0x1ca <USART_Send>
+		USART_Send('M');
+ 216:	8d e4       	ldi	r24, 0x4D	; 77
+		USART_Send('E');
+ 218:	d8 df       	rcall	.-80     	; 0x1ca <USART_Send>
+ 21a:	85 e4       	ldi	r24, 0x45	; 69
+ 21c:	d6 df       	rcall	.-84     	; 0x1ca <USART_Send>
+		USART_Send('?');
+ 21e:	8f e3       	ldi	r24, 0x3F	; 63
+ 220:	d4 df       	rcall	.-88     	; 0x1ca <USART_Send>
+ 222:	c0 e1       	ldi	r28, 0x10	; 16
+ 224:	d0 e0       	ldi	r29, 0x00	; 0
+ 226:	d9 df       	rcall	.-78     	; 0x1da <USART_Receive>
 		
-		USART_Transmit('H');
- 1de:	88 e4       	ldi	r24, 0x48	; 72
- 1e0:	e8 df       	rcall	.-48     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('E');
- 1e2:	85 e4       	ldi	r24, 0x45	; 69
- 1e4:	e6 df       	rcall	.-52     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('L');
- 1e6:	8c e4       	ldi	r24, 0x4C	; 76
- 1e8:	e4 df       	rcall	.-56     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('L');
- 1ea:	8c e4       	ldi	r24, 0x4C	; 76
- 1ec:	e2 df       	rcall	.-60     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('O');
- 1ee:	8f e4       	ldi	r24, 0x4F	; 79
- 1f0:	e0 df       	rcall	.-64     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('!');
- 1f2:	81 e2       	ldi	r24, 0x21	; 33
- 1f4:	de df       	rcall	.-68     	; 0x1b2 <USART_Transmit>
- 1f6:	8d e0       	ldi	r24, 0x0D	; 13
-		USART_Transmit('\r');
- 1f8:	dc df       	rcall	.-72     	; 0x1b2 <USART_Transmit>
- 1fa:	8a e0       	ldi	r24, 0x0A	; 10
- 1fc:	da df       	rcall	.-76     	; 0x1b2 <USART_Transmit>
-		USART_Transmit('\n');
- 1fe:	ef cf       	rjmp	.-34     	; 0x1de <main+0x1c>
+		for(int i = 0; i < 16; i++)
+		{
+			NameOfDevice[i] = USART_Receive();
+ 228:	b9 df       	rcall	.-142    	; 0x19c <LCD_WriteData>
+ 22a:	21 97       	sbiw	r28, 0x01	; 1
+			LCD_WriteData(NameOfDevice[i]);
+ 22c:	e1 f7       	brne	.-8      	; 0x226 <main+0x3c>
+ 22e:	e9 cf       	rjmp	.-46     	; 0x202 <main+0x18>
 
-00000200 <_exit>:
- 200:	f8 94       	cli
+00000230 <_exit>:
+ 230:	f8 94       	cli
 
-00000202 <__stop_program>:
- 202:	ff cf       	rjmp	.-2      	; 0x202 <__stop_program>
+00000232 <__stop_program>:
+		USART_Send('A');
+		USART_Send('M');
+		USART_Send('E');
+		USART_Send('?');
+		
+		for(int i = 0; i < 16; i++)
+ 232:	ff cf       	rjmp	.-2      	; 0x232 <__stop_program>

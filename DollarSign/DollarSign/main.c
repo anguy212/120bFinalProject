@@ -35,7 +35,7 @@ int main()
 
 		//LCDcustomChar(1, eruo);
 
-		LCD_WriteData(0x01);	
+		LCD_WriteData(0x23);	
 		
 	
         while(!TimerFlag);
