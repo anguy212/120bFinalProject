@@ -1,7 +1,5 @@
 /* Alice Nguyen & anguy212@ucr.edu
  * Lab section 23
- * Assignment: Lab 10, Exercise 3
- * 
  * I acknowledge all content contained herein, excluding template and example code,
  * is my own original work
  */ 
